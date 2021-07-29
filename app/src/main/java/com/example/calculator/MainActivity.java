@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // get all the screens
+        // get all the widgets
         result = (EditText) findViewById(R.id.result);
         newNumber = (EditText) findViewById(R.id.newNumber);
         displayOperation = (TextView) findViewById(R.id.operation);
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonMultiply = (Button) findViewById(R.id.buttonMultiply);
         Button buttonMinus = (Button) findViewById(R.id.buttonMinus);
         Button buttonPlus = (Button) findViewById(R.id.buttonAdd);
-        // append what button clicked to be shown on screen
+        // append what button clicked to be shown on screen/widget
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,8 +69,12 @@ public class MainActivity extends AppCompatActivity {
                 Button b = (Button) v;
                 String op = b.getText().toString();
                 String value = newNumber.getText().toString();
-                if (value.length() != 0) {
-                    performOperation(op,value);
+                try{
+                    Double doubleValue = Double.valueOf(value);
+                    performOperation(op, doubleValue);
+                }
+                catch (NumberFormatException e){
+                    newNumber.setText("");
                 }
                 pendingOperation = op;
                 displayOperation.setText(pendingOperation);
@@ -84,12 +88,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    private void performOperation(String operation, String value){
+    private void performOperation(String operation, Double value){
         if (operand1 == null){
-            operand1 = Double.valueOf(value);
+            operand1 = value;
         }
         else{
-            operand2 = Double.valueOf(value);
+            operand2 = value;
 
             if (pendingOperation.equals("=")){
                 pendingOperation = operation;

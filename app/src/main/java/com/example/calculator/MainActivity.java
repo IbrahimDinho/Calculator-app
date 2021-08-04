@@ -43,6 +43,11 @@ public class MainActivity extends AppCompatActivity {
         Button buttonMultiply = (Button) findViewById(R.id.buttonMultiply);
         Button buttonMinus = (Button) findViewById(R.id.buttonMinus);
         Button buttonPlus = (Button) findViewById(R.id.buttonAdd);
+        Button buttonClear = (Button) findViewById(R.id.clear);
+        Button buttonBack = (Button) findViewById(R.id.backspace);
+        Button buttonNegate = (Button) findViewById(R.id.negate);
+        Button buttonPower = (Button) findViewById(R.id.power);
+
         // append what button clicked to be shown on screen/widget
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -85,6 +90,57 @@ public class MainActivity extends AppCompatActivity {
         buttonPlus.setOnClickListener(opListener);
         buttonMinus.setOnClickListener(opListener);
         buttonMultiply.setOnClickListener(opListener);
+        buttonPower.setOnClickListener(opListener);
+        //negate with a anonymous function
+        buttonNegate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String value = newNumber.getText().toString();
+                if (value.length() == 0){
+                    newNumber.setText("-");
+                }
+                else{
+                    try{
+                        Double doubleValue = Double.valueOf(value);
+                        doubleValue *= -1;
+                        newNumber.setText(doubleValue.toString());
+                    }
+                    catch(NumberFormatException e){
+                        newNumber.setText("");
+                    }
+                }
+            }
+        });
+        // Clear
+        View.OnClickListener clearListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newNumber.setText("");
+                result.setText("");
+                displayOperation.setText("");
+                pendingOperation = "=";
+                operand1 = null;
+                operand2 = null;
+
+            }
+        };
+        buttonClear.setOnClickListener(clearListener);
+
+        //backspace
+        View.OnClickListener backListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = newNumber.getText().toString();
+                if (text.length() == 1 || text.length() == 0){
+                    newNumber.setText("");
+                    return;
+                }
+                text = text.substring(0,text.length()-1);
+                newNumber.setText(text);
+            }
+        };
+        buttonBack.setOnClickListener(backListener);
+
 
 
     }
@@ -102,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 case "=":
                     operand1 = operand2;
                     break;
-                case "/":
+                case "÷":
                     if (operand2 == 0){
                         operand1 = 0.0; //make this undefined but editText or something needs changing
                     }
@@ -116,8 +172,11 @@ public class MainActivity extends AppCompatActivity {
                 case "-":
                     operand1 -= operand2;
                     break;
-                case "*":
+                case "×":
                     operand1 *= operand2;
+                    break;
+                case "^":
+                    operand1 = Math.pow(operand1, operand2);
                     break;
 
 

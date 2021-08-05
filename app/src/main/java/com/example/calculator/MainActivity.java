@@ -1,7 +1,9 @@
 package com.example.calculator;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,8 +19,14 @@ public class MainActivity extends AppCompatActivity {
     private Double operand2 = null;
     private String pendingOperation = "=";
 
+    // variables to restore state
+    private static final String PENDING_OPERATION = "PendingOperation";
+    private static final String STATE_OPERAND1 = "Operand1";
+    // to log
+    private static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate: in");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // get all the widgets
@@ -144,6 +152,22 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(PENDING_OPERATION, pendingOperation);
+        if (operand1 != null) outState.putDouble(STATE_OPERAND1,operand1);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        pendingOperation = savedInstanceState.getString(PENDING_OPERATION);
+        operand1 = savedInstanceState.getDouble(STATE_OPERAND1);
+        displayOperation.setText(pendingOperation);
+    }
+
     private void performOperation(String operation, Double value){
         if (operand1 == null){
             operand1 = value;
